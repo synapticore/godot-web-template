@@ -1,0 +1,68 @@
+name: Export Godot Web and Deploy to Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  export-and-deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/synapticore/godot-4.6-headless:web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Export Web
+        run: |
+          mkdir -p build/web
+          $GODOT_BIN --path ./project --export-release "Web" ../build/web/index.html
+
+      - name: Prepare docs folder
+        run: |
+          rm -rf docs
+          mkdir -p docs
+          cp -r build/web/* docs/
+
+      - name: Add COOP/COEP service worker
+        run: |
+          cat > docs/coi-serviceworker.js << 'EOF'
+          self.addEventListener("install", function(e) {
+            self.skipWaiting();
+          });
+          self.addEventListener("activate", function(e) {
+            self.clients.claim();
+          });
+          self.addEventListener("fetch", function(event) {
+            const req = event.request;
+            const newHeaders = new Headers(req.headers);
+            newHeaders.set("Cross-Origin-Opener-Policy", "same-origin");
+            newHeaders.set("Cross-Origin-Embedder-Policy", "require-corp");
+            const newReq = new Request(req, { headers: newHeaders });
+            event.respondWith(fetch(newReq));
+          });
+          EOF
+
+      - name: Inject service worker into index.html
+        run: |
+          if [ -f docs/index.html ]; then
+            sed -i 's|<head>|<head>\n\t<script src="coi-serviceworker.js"></script>|' docs/index.html
+          fi
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
