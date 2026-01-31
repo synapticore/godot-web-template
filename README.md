@@ -4,59 +4,40 @@ A complete CI/CD setup for exporting Godot 4.6 projects to the web and automatic
 
 ## Features
 
-- ✅ Godot 4.6 headless Docker container for CI
-- ✅ Automated web export on push to main branch
-- ✅ GitHub Pages deployment
-- ✅ COOP/COEP service worker for SharedArrayBuffer support
-- ✅ Ready-to-use project structure
+- Automated Godot 4.6 web export on push to main
+- GitHub Pages deployment with GitHub Actions
+- Multi-threading support via coi-serviceworker (SharedArrayBuffer)
+- Godot + export templates cached for fast CI builds
+- Ready-to-use project structure
+
+## Live Demo
+
+https://synapticore.github.io/godot-web-template/
 
 ## Repository Structure
 
 ```
 godot-web-template/
-├── project/                # Your Godot 4.6 project
-│   ├── project.godot       # Main project file
-│   ├── export_presets.cfg  # Export configuration
-│   └── icon.svg            # Project icon
-├── docs/                   # Web export output (overwritten by CI)
-│   └── README.md           # Placeholder
-├── ci/
-│   └── docker/
-│       └── godot-4.6-headless.Dockerfile  # Docker image for CI
+├── project/                    # Your Godot 4.6 project
+│   ├── project.godot           # Main project file
+│   ├── export_presets.cfg      # Export configuration
+│   ├── coi-serviceworker.js    # COOP/COEP headers for SharedArrayBuffer
+│   └── icon.svg                # Project icon
+├── docs/                       # Web export output (overwritten by CI)
 └── .github/
     └── workflows/
-        └── export-web.yml  # GitHub Actions workflow
+        └── export-web.yml      # GitHub Actions workflow
 ```
 
 ## Setup Instructions
 
-### 1. Build and Push Docker Image
+### 1. Use This Template
 
-First, you need to build the Godot 4.6 headless Docker image and push it to GitHub Container Registry (GHCR):
-
-```bash
-# Build the image
-docker build -t ghcr.io/synapticore/godot-4.6-headless:web \
-  -f ci/docker/godot-4.6-headless.Dockerfile .
-
-# Login to GHCR (use a personal access token with write:packages scope)
-echo $GITHUB_TOKEN | docker login ghcr.io -u synapticore --password-stdin
-
-# Push the image
-docker push ghcr.io/synapticore/godot-4.6-headless:web
-
-# Make the package public (optional, or configure via GitHub UI)
-```
-
-**Note:** Update the image reference in `.github/workflows/export-web.yml` to match your username:
-```yaml
-container:
-  image: ghcr.io/synapticore/godot-4.6-headless:web
-```
+Click "Use this template" on GitHub to create your own repository.
 
 ### 2. Enable GitHub Pages
 
-1. Go to your repository settings
+1. Go to your repository **Settings**
 2. Navigate to **Pages** section
 3. Under **Build and deployment**, select **GitHub Actions** as the source
 
@@ -65,51 +46,68 @@ container:
 Add your game code and assets to the `project/` folder. The project is already configured with:
 - Godot 4.6 compatibility
 - GL Compatibility rendering method
-- Web export preset
+- Web export preset with thread support
 
 ### 4. Push to Main Branch
 
 When you push to the `main` branch, the GitHub Actions workflow will:
-1. Export your project to WebAssembly
-2. Add a service worker for cross-origin isolation
-3. Deploy to GitHub Pages
+1. Install Godot 4.6 and export templates (cached for speed)
+2. Export your project to WebAssembly
+3. Inject coi-serviceworker for COOP/COEP headers
+4. Deploy to GitHub Pages
 
-Your game will be available at: `https://synapticore.github.io/godot-web-template/`
+Your game will be available at: `https://<username>.github.io/<repo-name>/`
 
 ## Local Development
 
-To work on your project locally, download and install [Godot 4.6](https://godotengine.org/download) and open the `project/` folder.
+### Prerequisites
+- [Godot 4.6](https://godotengine.org/download) with export templates installed
 
-## Service Worker
+### Export Locally
 
-The workflow automatically includes a service worker (`coi-serviceworker.js`) that sets the required headers for SharedArrayBuffer support:
+```bash
+# Export web build
+mkdir -p build/web
+godot --headless --path ./project --export-release "Web" ../build/web/index.html
+
+# Add service worker for local testing
+cp project/coi-serviceworker.js build/web/
+sed -i 's|<head>|<head><script src="coi-serviceworker.js"></script>|' build/web/index.html
+
+# Start local server
+cd build/web && python -m http.server 8888
+# Open http://localhost:8888
+```
+
+## Thread Support & SharedArrayBuffer
+
+Web exports use SharedArrayBuffer for multi-threading, which requires COOP/COEP headers:
 - `Cross-Origin-Opener-Policy: same-origin`
 - `Cross-Origin-Embedder-Policy: require-corp`
 
-This enables advanced features like threading and high-performance memory operations in your exported web game.
+GitHub Pages doesn't support custom headers, so we use [coi-serviceworker](https://github.com/gzuidhof/coi-serviceworker) to inject them via service worker. On first visit, the page reloads once to activate the service worker.
 
 ## Customization
 
 - **Project Settings:** Edit `project/project.godot` using the Godot editor
 - **Export Settings:** Modify `project/export_presets.cfg` for web export options
 - **Workflow:** Customize `.github/workflows/export-web.yml` for different deployment options
-- **Docker Image:** Adjust `ci/docker/godot-4.6-headless.Dockerfile` for different Godot versions
+- **Godot Version:** Update download URLs in the workflow for different versions
 
 ## Troubleshooting
-
-### Workflow Fails with "Image not found"
-- Ensure you've built and pushed the Docker image to GHCR
-- Update the image reference in the workflow file to match your username
-- Verify the package is public or the workflow has access to it
 
 ### Export Fails
 - Check that `export_presets.cfg` is committed to the repository
 - Verify the export preset name matches "Web" in the workflow
 
-### Game Doesn't Load
+### Game Shows Black Screen
 - Check browser console for errors
-- Verify COOP/COEP headers are set correctly
-- Ensure all assets are included in the export
+- Ensure coi-serviceworker.js is loaded (check for "COOP/COEP Service Worker registered" in console)
+- Try refreshing - first load registers the service worker, second load runs the game
+
+### Game Doesn't Load
+- Verify all assets are included in the export
+- Check that thread support is enabled in export_presets.cfg
 
 ## License
 
