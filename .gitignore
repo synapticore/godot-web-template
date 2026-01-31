@@ -33,3 +33,7 @@ Thumbs.db
 
 # Godot UID files (auto-generated)
 *.uid
+
+# Local tools and test output
+tools/
+.playwright-mcp/

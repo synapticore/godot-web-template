@@ -58,14 +58,16 @@ jobs:
           mkdir -p build/web
           godot --headless --path ./project --export-release "Web" ../build/web/index.html
 
+      - name: Add COOP/COEP service worker
+        run: |
+          cp project/coi-serviceworker.js build/web/
+          sed -i 's|<head>|<head><script src="coi-serviceworker.js"></script>|' build/web/index.html
+
       - name: Prepare docs folder
         run: |
           rm -rf docs
           mkdir -p docs
           cp -r build/web/* docs/
-
-      # COOP/COEP headers are handled by Godot 4.6's built-in PWA service worker
-      # (ENSURE_CROSSORIGIN_ISOLATION_HEADERS = true in index.service.worker.js)
 
       - name: Configure Pages
         uses: actions/configure-pages@v4
