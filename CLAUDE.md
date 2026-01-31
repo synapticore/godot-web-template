@@ -29,7 +29,7 @@ ci/docker/         # Dockerfile for headless Godot 4.6
 .github/workflows/ # export-web.yml triggers on push to main
 ```
 
-CI: Push to main → Docker exports WebAssembly → Service worker for COOP/COEP → GitHub Pages
+CI: Push to main → Godot 4.6 exports WebAssembly → Service worker for COOP/COEP → GitHub Pages
 
 ## Deployment
 

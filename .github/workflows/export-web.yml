@@ -13,12 +13,37 @@ permissions:
 jobs:
   export-and-deploy:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/synapticore/godot-4.6-headless:web
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/bin/godot
+            ~/.local/share/godot/export_templates
+          key: godot-4.6-stable
+
+      - name: Install Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          wget -q -O /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_linux.x86_64.zip
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo mv /tmp/Godot_v4.6-stable_linux.x86_64 /usr/local/bin/godot
+          sudo chmod +x /usr/local/bin/godot
+          rm /tmp/godot.zip
+
+      - name: Install Export Templates
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          wget -q -O /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/4.6.stable
+          unzip -q /tmp/templates.tpz -d /tmp
+          mv /tmp/templates/* ~/.local/share/godot/export_templates/4.6.stable/
+          rm -rf /tmp/templates /tmp/templates.tpz
 
       - name: Cache Godot import files
         uses: actions/cache@v4
@@ -31,7 +56,7 @@ jobs:
       - name: Export Web
         run: |
           mkdir -p build/web
-          $GODOT_BIN --path ./project --export-release "Web" ../build/web/index.html
+          godot --headless --path ./project --export-release "Web" ../build/web/index.html
 
       - name: Prepare docs folder
         run: |
