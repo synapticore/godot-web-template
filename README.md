@@ -1,5 +1,12 @@
 # Godot 4.6 Web Template
 
+[![Deploy to GitHub Pages](https://github.com/synapticore/godot-web-template/actions/workflows/export-web.yml/badge.svg)](https://github.com/synapticore/godot-web-template/actions/workflows/export-web.yml)
+[![Godot 4.6](https://img.shields.io/badge/Godot-4.6-blue?logo=godotengine&logoColor=white)](https://godotengine.org/)
+[![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?logo=webassembly&logoColor=white)](https://webassembly.org/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen?logo=github)](https://synapticore.github.io/godot-web-template/)
+[![Template](https://img.shields.io/badge/Template-Use%20this-orange?logo=github)](https://github.com/synapticore/godot-web-template/generate)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+
 A complete CI/CD setup for exporting Godot 4.6 projects to the web and automatically deploying to GitHub Pages.
 
 ## Features
@@ -111,4 +118,4 @@ GitHub Pages doesn't support custom headers, so we use [coi-serviceworker](https
 
 ## License
 
-This template is provided as-is for use in your own projects.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
