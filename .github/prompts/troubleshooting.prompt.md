@@ -261,36 +261,37 @@ permissions:
 
 ### Diagnosis Steps
 
-1. **Check service worker file**
+1. **Check Godot's built-in service worker**
    ```bash
-   # Should exist in docs/
-   cat docs/coi-serviceworker.js
+   # Godot 4.6 generates this automatically when PWA is enabled
+   cat docs/index.service.worker.js
+   # Look for: ENSURE_CROSSORIGIN_ISOLATION_HEADERS = true
    ```
 
-2. **Verify injection in HTML**
+2. **Verify PWA is enabled**
    ```bash
-   # Check if script tag exists
-   grep "coi-serviceworker" docs/index.html
+   grep "progressive_web_app/enabled" project/export_presets.cfg
+   # Should show: progressive_web_app/enabled=true
    ```
 
 3. **Check browser DevTools**
    - Application > Service Workers
-   - Should show registered worker
+   - Should show `index.service.worker.js` registered
    - Check for errors
 
 4. **Verify headers**
    - Network tab > Response Headers
-   - Should include COOP and COEP
+   - Should include COOP and COEP after service worker is active
 
 ### Solutions
 
-**Service worker missing**: Ensure workflow creates it
+**Service worker missing**: Enable PWA in export_presets.cfg (`progressive_web_app/enabled=true`)
 
-**Not injected**: Check workflow step that injects into HTML
+**Headers not set**: Godot 4.6's service worker handles this automatically - ensure `ENSURE_CROSSORIGIN_ISOLATION_HEADERS = true` in the generated service worker
 
-**Not registering**: Check browser console for errors
+**Not registering**: Clear browser cache/service workers and reload
 
-**Headers not set**: Verify service worker fetch handler
+**First load issue**: Service worker needs one page load to register, then headers work on reload
 
 ## Issue Category: Performance Issues
 

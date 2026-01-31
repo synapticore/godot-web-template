@@ -64,9 +64,9 @@ Help the contributor understand:
    - Deployment to GitHub Pages
 
 3. **Service worker integration**
-   - Purpose of coi-serviceworker.js
-   - COOP/COEP headers for SharedArrayBuffer
-   - How it's injected into the exported HTML
+   - Godot 4.6's built-in PWA service worker (index.service.worker.js)
+   - COOP/COEP headers for SharedArrayBuffer (handled automatically)
+   - PWA features: offline support, installable app
 
 4. **Docker container**
    - Dockerfile structure for Godot 4.6
