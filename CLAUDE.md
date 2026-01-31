@@ -5,13 +5,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-# Build Docker image
-cd ci/docker && ./build-image.sh
-
-# Test export locally with Docker (from repo root)
+# Export locally (requires Godot 4.6 with export templates)
 mkdir -p build/web
-docker run --rm -v "$(pwd):/work" -w /work ghcr.io/synapticore/godot-4.6-headless:web \
-  --path ./project --export-release "Web" /work/build/web/index.html
+godot --headless --path ./project --export-release "Web" ../build/web/index.html
+
+# Add COOP/COEP service worker for local testing
+cp project/coi-serviceworker.js build/web/
+sed -i 's|<head>|<head><script src="coi-serviceworker.js"></script>|' build/web/index.html
 
 # Local preview (requires Python)
 cd build/web && python -m http.server 8888
@@ -24,12 +24,18 @@ Local development: Open `project/` in Godot 4.6 editor.
 
 ```
 project/           # Godot 4.6 project (main.tscn, main.gd, export_presets.cfg)
+project/coi-serviceworker.js  # COOP/COEP headers for SharedArrayBuffer
 docs/              # GitHub Pages output (overwritten by CI)
-ci/docker/         # Dockerfile for headless Godot 4.6
 .github/workflows/ # export-web.yml triggers on push to main
 ```
 
-CI: Push to main → Godot 4.6 exports WebAssembly → Service worker for COOP/COEP → GitHub Pages
+CI: Push to main → Godot 4.6 exports WebAssembly → coi-serviceworker for COOP/COEP → GitHub Pages
+
+## Thread Support
+
+Web exports use SharedArrayBuffer for multi-threading, which requires COOP/COEP headers.
+GitHub Pages doesn't support custom headers, so we use [coi-serviceworker](https://github.com/gzuidhof/coi-serviceworker)
+to inject them via service worker. The CI workflow automatically adds this to the build.
 
 ## Deployment
 
