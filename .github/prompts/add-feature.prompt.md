@@ -161,8 +161,9 @@ When improving the CI container image:
 
 4. **Test export functionality**
    ```bash
-   docker run --rm -v $(pwd):/work -w /work test-image \
-     --path ./project --export-release "Web" ./build/index.html
+   mkdir -p build/web
+   docker run --rm -v "$(pwd):/work" -w /work test-image \
+     --path ./project --export-release "Web" /work/build/web/index.html
    ```
 
 5. **Update documentation**
@@ -176,7 +177,7 @@ When improving the CI container image:
 # Stage 1: Download and prepare
 FROM ubuntu:22.04 AS builder
 RUN apt-get update && apt-get install -y wget unzip
-RUN wget -O /tmp/godot.zip https://downloads.tuxfamily.org/...
+RUN wget -O /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.6-stable/...
 
 # Stage 2: Runtime
 FROM ubuntu:22.04

@@ -20,6 +20,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache Godot import files
+        uses: actions/cache@v4
+        with:
+          path: project/.godot
+          key: godot-import-${{ hashFiles('project/**/*.tscn', 'project/**/*.tres', 'project/**/*.gd') }}
+          restore-keys: |
+            godot-import-
+
       - name: Export Web
         run: |
           mkdir -p build/web
@@ -31,30 +39,8 @@ jobs:
           mkdir -p docs
           cp -r build/web/* docs/
 
-      - name: Add COOP/COEP service worker
-        run: |
-          cat > docs/coi-serviceworker.js << 'EOF'
-          self.addEventListener("install", function(e) {
-            self.skipWaiting();
-          });
-          self.addEventListener("activate", function(e) {
-            self.clients.claim();
-          });
-          self.addEventListener("fetch", function(event) {
-            const req = event.request;
-            const newHeaders = new Headers(req.headers);
-            newHeaders.set("Cross-Origin-Opener-Policy", "same-origin");
-            newHeaders.set("Cross-Origin-Embedder-Policy", "require-corp");
-            const newReq = new Request(req, { headers: newHeaders });
-            event.respondWith(fetch(newReq));
-          });
-          EOF
-
-      - name: Inject service worker into index.html
-        run: |
-          if [ -f docs/index.html ]; then
-            sed -i 's|<head>|<head>\n\t<script src="coi-serviceworker.js"></script>|' docs/index.html
-          fi
+      # COOP/COEP headers are handled by Godot 4.6's built-in PWA service worker
+      # (ENSURE_CROSSORIGIN_ISOLATION_HEADERS = true in index.service.worker.js)
 
       - name: Configure Pages
         uses: actions/configure-pages@v4

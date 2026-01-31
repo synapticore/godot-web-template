@@ -130,7 +130,7 @@ You are helping a user diagnose and fix issues with the **Godot 4.6 Web Template
 2. **Verify Docker image**
    ```bash
    # Check if image exists in GHCR
-   docker pull ghcr.io/USERNAME/godot-4.6-headless:web
+   docker pull ghcr.io/synapticore/godot-4.6-headless:web
    ```
 
 3. **Check workflow file**
@@ -150,7 +150,7 @@ You are helping a user diagnose and fix issues with the **Godot 4.6 Web Template
 ```bash
 cd ci/docker
 ./build-image.sh
-docker push ghcr.io/USERNAME/godot-4.6-headless:web
+docker push ghcr.io/synapticore/godot-4.6-headless:web
 ```
 
 **Permission denied**: Update workflow permissions in YAML
@@ -193,7 +193,7 @@ permissions:
 4. **Check download URLs**
    ```bash
    # Verify Godot download URL is accessible
-   wget -O /tmp/test.zip https://downloads.tuxfamily.org/godotengine/4.6/Godot_v4.6-stable_linux.x86_64.zip
+   wget -O /tmp/test.zip https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_linux.x86_64.zip
    ```
 
 ### Solutions
@@ -359,9 +359,10 @@ godot --verbose project/project.godot
 
 **In Docker:**
 ```bash
-docker run --rm -v $(pwd):/work -w /work \
-  ghcr.io/USERNAME/godot-4.6-headless:web \
-  --verbose --path ./project --export-release "Web" ./build/index.html
+mkdir -p build/web
+docker run --rm -v "$(pwd):/work" -w /work \
+  ghcr.io/synapticore/godot-4.6-headless:web \
+  --verbose --path ./project --export-release "Web" /work/build/web/index.html
 ```
 
 **In GitHub Actions:**
@@ -431,8 +432,9 @@ godot project/project.godot
 cd ci/docker && ./build-image.sh
 
 # Test Docker export
-docker run --rm -v $(pwd):/work -w /work IMAGE_NAME \
-  --path ./project --export-release "Web" ./build/index.html
+mkdir -p build/web
+docker run --rm -v "$(pwd):/work" -w /work ghcr.io/synapticore/godot-4.6-headless:web \
+  --path ./project --export-release "Web" /work/build/web/index.html
 
 # Clean build
 rm -rf project/.godot build/ docs/

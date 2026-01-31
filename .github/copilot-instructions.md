@@ -78,7 +78,7 @@ cd ci/docker
 
 Or manually:
 ```bash
-docker build -t ghcr.io/USERNAME/godot-4.6-headless:web \
+docker build -t ghcr.io/synapticore/godot-4.6-headless:web \
   -f ci/docker/godot-4.6-headless.Dockerfile .
 ```
 
@@ -94,7 +94,7 @@ docker build -t ghcr.io/USERNAME/godot-4.6-headless:web \
 1. Modify `.github/workflows/export-web.yml`
 2. Push to the branch
 3. Monitor workflow execution in GitHub Actions
-4. Check deployment at `https://USERNAME.github.io/REPO_NAME/`
+4. Check deployment at `https://synapticore.github.io/godot-web-template/`
 
 ## Using Model Context Protocol (MCP) in this Repository
 

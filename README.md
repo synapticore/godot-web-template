@@ -36,14 +36,14 @@ First, you need to build the Godot 4.6 headless Docker image and push it to GitH
 
 ```bash
 # Build the image
-docker build -t ghcr.io/YOUR_USERNAME/godot-4.6-headless:web \
+docker build -t ghcr.io/synapticore/godot-4.6-headless:web \
   -f ci/docker/godot-4.6-headless.Dockerfile .
 
 # Login to GHCR (use a personal access token with write:packages scope)
-echo $GITHUB_TOKEN | docker login ghcr.io -u YOUR_USERNAME --password-stdin
+echo $GITHUB_TOKEN | docker login ghcr.io -u synapticore --password-stdin
 
 # Push the image
-docker push ghcr.io/YOUR_USERNAME/godot-4.6-headless:web
+docker push ghcr.io/synapticore/godot-4.6-headless:web
 
 # Make the package public (optional, or configure via GitHub UI)
 ```
@@ -51,7 +51,7 @@ docker push ghcr.io/YOUR_USERNAME/godot-4.6-headless:web
 **Note:** Update the image reference in `.github/workflows/export-web.yml` to match your username:
 ```yaml
 container:
-  image: ghcr.io/YOUR_USERNAME/godot-4.6-headless:web
+  image: ghcr.io/synapticore/godot-4.6-headless:web
 ```
 
 ### 2. Enable GitHub Pages
@@ -74,7 +74,7 @@ When you push to the `main` branch, the GitHub Actions workflow will:
 2. Add a service worker for cross-origin isolation
 3. Deploy to GitHub Pages
 
-Your game will be available at: `https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/`
+Your game will be available at: `https://synapticore.github.io/godot-web-template/`
 
 ## Local Development
 
