@@ -115,11 +115,10 @@ theme_override_styles/panel = SubResource("section_header")
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="MaterialIcon" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/MaterialSection/MaterialHeader/MaterialHeaderContent"]
+[node name="MaterialIcon" type="ColorRect" parent="PropertiesPanel/PanelMargin/PanelContent/MaterialSection/MaterialHeader/MaterialHeaderContent"]
+custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.65, 1.0, 1)
-theme_override_font_sizes/font_size = 12
-text = "●"
+color = Color(0.4, 0.65, 1.0, 1)
 
 [node name="MaterialLabel" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/MaterialSection/MaterialHeader/MaterialHeaderContent"]
 layout_mode = 2
@@ -146,11 +145,10 @@ theme_override_styles/panel = SubResource("section_header")
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="LightingIcon" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/LightingSection/LightingHeader/LightingHeaderContent"]
+[node name="LightingIcon" type="ColorRect" parent="PropertiesPanel/PanelMargin/PanelContent/LightingSection/LightingHeader/LightingHeaderContent"]
+custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
-theme_override_colors/font_color = Color(1.0, 0.8, 0.4, 1)
-theme_override_font_sizes/font_size = 12
-text = "◐"
+color = Color(1.0, 0.8, 0.4, 1)
 
 [node name="LightingLabel" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/LightingSection/LightingHeader/LightingHeaderContent"]
 layout_mode = 2
@@ -177,11 +175,10 @@ theme_override_styles/panel = SubResource("section_header")
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="PostIcon" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/PostSection/PostHeader/PostHeaderContent"]
+[node name="PostIcon" type="ColorRect" parent="PropertiesPanel/PanelMargin/PanelContent/PostSection/PostHeader/PostHeaderContent"]
+custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.5, 0.7, 1)
-theme_override_font_sizes/font_size = 12
-text = "◈"
+color = Color(0.9, 0.5, 0.7, 1)
 
 [node name="PostLabel" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/PostSection/PostHeader/PostHeaderContent"]
 layout_mode = 2
@@ -231,12 +228,11 @@ theme_override_constants/margin_bottom = 12
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="LogoIcon" type="Label" parent="HeaderBar/LogoSection/LogoMargin/LogoText"]
+[node name="LogoIcon" type="ColorRect" parent="HeaderBar/LogoSection/LogoMargin/LogoText"]
+custom_minimum_size = Vector2(12, 12)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.35, 0.6, 1.0, 1)
-theme_override_font_sizes/font_size = 18
-text = "◆"
-vertical_alignment = 1
+size_flags_vertical = 4
+color = Color(0.35, 0.6, 1.0, 1)
 
 [node name="LogoName" type="Label" parent="HeaderBar/LogoSection/LogoMargin/LogoText"]
 layout_mode = 2
