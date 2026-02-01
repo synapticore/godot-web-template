@@ -64,6 +64,7 @@ func _ready() -> void:
 
 	SignalBus.lighting_preset_changed.connect(set_lighting_preset)
 	SignalBus.shader_preset_changed.connect(set_shader_preset)
+	SignalBus.post_process_changed.connect(set_post_preset)
 
 	set_lighting_preset("studio")
 
@@ -186,3 +187,39 @@ func get_available_shader_presets() -> Array[String]:
 	for key in material_presets.keys():
 		presets.append(key)
 	return presets
+
+
+func set_post_preset(preset_name: String) -> void:
+	if not _world_env or not _world_env.environment:
+		return
+
+	var env := _world_env.environment
+
+	match preset_name:
+		"none":
+			env.tonemap_exposure = 1.0
+			env.adjustment_enabled = false
+		"warm":
+			env.tonemap_exposure = 1.1
+			env.adjustment_enabled = true
+			env.adjustment_brightness = 1.05
+			env.adjustment_contrast = 1.05
+			env.adjustment_saturation = 1.1
+		"cool":
+			env.tonemap_exposure = 0.95
+			env.adjustment_enabled = true
+			env.adjustment_brightness = 1.0
+			env.adjustment_contrast = 1.0
+			env.adjustment_saturation = 0.9
+		"contrast":
+			env.tonemap_exposure = 1.0
+			env.adjustment_enabled = true
+			env.adjustment_brightness = 1.0
+			env.adjustment_contrast = 1.3
+			env.adjustment_saturation = 1.1
+		"desaturated":
+			env.tonemap_exposure = 1.0
+			env.adjustment_enabled = true
+			env.adjustment_brightness = 1.0
+			env.adjustment_contrast = 1.1
+			env.adjustment_saturation = 0.3

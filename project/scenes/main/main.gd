@@ -11,8 +11,6 @@ extends Control
 @onready var audio_button: Button = $VBoxContainer/HeaderBar/AudioButton
 
 var _viewport_demo: Node3D
-var _post_process_rect: ColorRect
-var _color_grade_shader: ShaderMaterial
 
 
 func _ready() -> void:
@@ -61,18 +59,9 @@ func _setup_controls() -> void:
 
 
 func _setup_post_processing() -> void:
-	# Create post-processing overlay for viewport
-	var shader := preload("res://resources/shaders/color_grade.gdshader")
-	_color_grade_shader = ShaderMaterial.new()
-	_color_grade_shader.shader = shader
-
-	_post_process_rect = ColorRect.new()
-	_post_process_rect.material = _color_grade_shader
-	_post_process_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_post_process_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-
-	# Add to viewport container (overlays the SubViewport)
-	viewport_container.add_child(_post_process_rect)
+	# Post-processing via Environment tonemapping (set in viewport_demo.gd)
+	# No overlay needed - avoids SubViewport texture issues in web export
+	pass
 
 
 func _connect_signals() -> void:
@@ -99,27 +88,9 @@ func _on_lighting_selected(index: int) -> void:
 
 
 func _on_post_selected(index: int) -> void:
-	match index:
-		0:  # None
-			_apply_post_preset(0.0, 1.0, 1.0, Color.WHITE, 0.0)
-		1:  # Warm
-			_apply_post_preset(0.1, 1.05, 1.1, Color(1.0, 0.95, 0.9), 0.3)
-		2:  # Cool
-			_apply_post_preset(-0.1, 1.0, 0.95, Color(0.9, 0.95, 1.0), 0.3)
-		3:  # High Contrast
-			_apply_post_preset(0.0, 1.3, 1.1, Color.WHITE, 0.0)
-		4:  # Desaturated
-			_apply_post_preset(0.0, 1.1, 0.3, Color.WHITE, 0.0)
-
-	Settings.current_post_preset = post_button.get_item_text(index).to_lower().replace(" ", "_")
-
-
-func _apply_post_preset(exposure: float, contrast: float, saturation: float, tint: Color, tint_strength: float) -> void:
-	_color_grade_shader.set_shader_parameter("exposure", exposure)
-	_color_grade_shader.set_shader_parameter("contrast", contrast)
-	_color_grade_shader.set_shader_parameter("saturation", saturation)
-	_color_grade_shader.set_shader_parameter("tint", tint)
-	_color_grade_shader.set_shader_parameter("tint_strength", tint_strength)
+	var preset_name := ["none", "warm", "cool", "contrast", "desaturated"][index]
+	SignalBus.post_process_changed.emit(preset_name)
+	Settings.current_post_preset = preset_name
 
 
 func _on_settings_pressed() -> void:

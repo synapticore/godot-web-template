@@ -1,24 +1,39 @@
-[gd_scene load_steps=4 format=3 uid="uid://dgt7k2m1v8nxp"]
+[gd_scene load_steps=5 format=3 uid="uid://dgt7k2m1v8nxp"]
 
 [ext_resource type="Script" path="res://scenes/showcase/viewport_demo.gd" id="1_demo"]
 [ext_resource type="PackedScene" uid="uid://c3xm7jk8yv2dl" path="res://components/camera/orbit_camera.tscn" id="2_orbit"]
 
-[sub_resource type="TorusMesh" id="TorusMesh_1"]
-inner_radius = 0.8
-outer_radius = 1.2
-rings = 48
-ring_segments = 24
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(0.85, 0.85, 0.9, 1)
+metallic = 0.1
+roughness = 0.3
+
+[sub_resource type="SphereMesh" id="SphereMesh_1"]
+material = SubResource("StandardMaterial3D_1")
+radius = 0.8
+height = 1.6
+radial_segments = 48
+rings = 24
 
 [node name="ViewportDemo" type="Node3D"]
 script = ExtResource("1_demo")
 
 [node name="DemoMesh" type="MeshInstance3D" parent="."]
-mesh = SubResource("TorusMesh_1")
+mesh = SubResource("SphereMesh_1")
+
+[node name="OrbitRing1" type="MeshInstance3D" parent="DemoMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="OrbitRing2" type="MeshInstance3D" parent="DemoMesh"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0)
+
+[node name="OrbitRing3" type="MeshInstance3D" parent="DemoMesh"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
 
 [node name="OrbitCamera" parent="." instance=ExtResource("2_orbit")]
-distance = 4.0
+distance = 3.5
 auto_rotate = true
-auto_rotate_speed = 0.15
+auto_rotate_speed = 0.2
 
 [node name="MainLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 3, 0)
