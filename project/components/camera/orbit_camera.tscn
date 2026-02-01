@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3xm7jk8yv2dl"]
+
+[ext_resource type="Script" path="res://components/camera/orbit_camera.gd" id="1_orbit"]
+
+[node name="OrbitCamera" type="Node3D"]
+script = ExtResource("1_orbit")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+fov = 50.0

@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://dgt7k2m1v8nxp"]
+
+[ext_resource type="Script" path="res://scenes/showcase/viewport_demo.gd" id="1_demo"]
+[ext_resource type="PackedScene" uid="uid://c3xm7jk8yv2dl" path="res://components/camera/orbit_camera.tscn" id="2_orbit"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_1"]
+inner_radius = 0.8
+outer_radius = 1.2
+rings = 48
+ring_segments = 24
+
+[node name="ViewportDemo" type="Node3D"]
+script = ExtResource("1_demo")
+
+[node name="DemoMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_1")
+
+[node name="OrbitCamera" parent="." instance=ExtResource("2_orbit")]
+distance = 4.0
+auto_rotate = true
+auto_rotate_speed = 0.15
+
+[node name="MainLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 3, 0)
+light_color = Color(1, 0.98, 0.95, 1)
+light_energy = 1.0
+shadow_enabled = true
+
+[node name="FillLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 2, 0)
+light_color = Color(0.8, 0.85, 1, 1)
+light_energy = 0.3
+
+[node name="RimLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 0.707107, -0.707107, 0, -0.707107, -0.707107, 0, 2, -3)
+light_color = Color(1, 0.95, 0.9, 1)
+light_energy = 0.5
+
+[editable path="OrbitCamera"]

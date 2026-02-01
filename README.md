@@ -1,121 +1,102 @@
-# Godot 4.6 Web Template
+# synapticore.studio Template
 
-[![Deploy to GitHub Pages](https://github.com/synapticore/godot-web-template/actions/workflows/export-web.yml/badge.svg)](https://github.com/synapticore/godot-web-template/actions/workflows/export-web.yml)
-[![Godot 4.6](https://img.shields.io/badge/Godot-4.6-blue?logo=godotengine&logoColor=white)](https://godotengine.org/)
+[![Deploy to GitHub Pages](https://github.com/synapticore-studio/godot-web-template/actions/workflows/export-web.yml/badge.svg)](https://github.com/synapticore-studio/godot-web-template/actions/workflows/export-web.yml)
+[![Godot 4.6](https://img.shields.io/badge/Godot-4.6-478CBF?logo=godotengine&logoColor=white)](https://godotengine.org/)
 [![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?logo=webassembly&logoColor=white)](https://webassembly.org/)
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen?logo=github)](https://synapticore.github.io/godot-web-template/)
-[![Template](https://img.shields.io/badge/Template-Use%20this-orange?logo=github)](https://github.com/synapticore/godot-web-template/generate)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen?logo=github)](https://synapticore-studio.github.io/godot-web-template/)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
-A complete CI/CD setup for exporting Godot 4.6 projects to the web and automatically deploying to GitHub Pages.
+**Agentic DCC Pipelines & Interactive AI Experiences**
 
-## Features
-
-- Automated Godot 4.6 web export on push to main
-- GitHub Pages deployment with GitHub Actions
-- Multi-threading support via coi-serviceworker (SharedArrayBuffer)
-- Godot + export templates cached for fast CI builds
-- Ready-to-use project structure
+A professional Godot 4.6 project template with DCC pipeline utilities, color science, and an interactive 3D showcase.
 
 ## Live Demo
 
-https://synapticore.github.io/godot-web-template/
+https://synapticore-studio.github.io/godot-web-template/
 
-## Repository Structure
+## Features
+
+### Showcase
+- Interactive 3D viewport with OrbitCamera (drag to rotate, scroll to zoom)
+- Material presets (Default, Metallic, Glossy, Matte, Emissive)
+- Lighting presets (Studio, Dramatic, Soft, Sunset)
+- Post-processing presets (Warm, Cool, High Contrast, Desaturated)
+
+### Starter Kit
+- **Autoload Singletons:** SignalBus, Settings, AudioManager, GameManager
+- **Scene Management:** Fade transitions, state machine
+- **Settings System:** Persistent save/load via ConfigFile
+- **Audio System:** Music fade, SFX pooling, bus control
+- **Debug Overlay:** FPS, memory, draw calls (F3)
+
+### DCC Utilities
+- **ColorUtils:** sRGB/Linear conversion, ACES tonemapping, Rec.2020/DCI-P3, Kelvin to RGB
+- **InputUtils:** Mouse, touch, deadzone handling, web pointer lock
+- **Shaders:** Color grading, Studio PBR, gradient background
+
+## Project Structure
 
 ```
-godot-web-template/
-├── project/                    # Your Godot 4.6 project
-│   ├── project.godot           # Main project file
-│   ├── export_presets.cfg      # Export configuration
-│   ├── coi-serviceworker.js    # COOP/COEP headers for SharedArrayBuffer
-│   └── icon.svg                # Project icon
-├── docs/                       # Web export output (overwritten by CI)
-└── .github/
-    └── workflows/
-        └── export-web.yml      # GitHub Actions workflow
+project/
+├── autoloads/           # Singleton managers
+│   ├── signal_bus.gd    # Global event bus
+│   ├── settings.gd      # Persistent preferences
+│   ├── audio_manager.gd # Music/SFX handling
+│   └── game_manager.gd  # App state & scenes
+├── scenes/
+│   ├── main/            # Entry point
+│   ├── ui/              # UI components
+│   └── showcase/        # 3D demo scene
+├── components/
+│   └── camera/          # OrbitCamera prefab
+├── resources/
+│   ├── themes/          # UI themes
+│   └── shaders/         # Shader library
+└── utils/
+    ├── color_utils.gd   # Color science helpers
+    └── input_utils.gd   # Input handling
 ```
 
-## Setup Instructions
+## Quick Start
 
-### 1. Use This Template
+### Use as Template
 
-Click "Use this template" on GitHub to create your own repository.
+1. Click "Use this template" on GitHub
+2. Enable GitHub Pages (Settings → Pages → Source: GitHub Actions)
+3. Push to main - auto-deploys to `https://<user>.github.io/<repo>/`
 
-### 2. Enable GitHub Pages
-
-1. Go to your repository **Settings**
-2. Navigate to **Pages** section
-3. Under **Build and deployment**, select **GitHub Actions** as the source
-
-### 3. Develop Your Game
-
-Add your game code and assets to the `project/` folder. The project is already configured with:
-- Godot 4.6 compatibility
-- GL Compatibility rendering method
-- Web export preset with thread support
-
-### 4. Push to Main Branch
-
-When you push to the `main` branch, the GitHub Actions workflow will:
-1. Install Godot 4.6 and export templates (cached for speed)
-2. Export your project to WebAssembly
-3. Inject coi-serviceworker for COOP/COEP headers
-4. Deploy to GitHub Pages
-
-Your game will be available at: `https://<username>.github.io/<repo-name>/`
-
-## Local Development
-
-### Prerequisites
-- [Godot 4.6](https://godotengine.org/download) with export templates installed
-
-### Export Locally
+### Local Development
 
 ```bash
+# Open in Godot 4.6
+godot --path ./project
+
 # Export web build
-mkdir -p build/web
-godot --headless --path ./project --export-release "Web" ../build/web/index.html
-
-# Add service worker for local testing
-cp project/coi-serviceworker.js build/web/
-sed -i 's|<head>|<head><script src="coi-serviceworker.js"></script>|' build/web/index.html
-
-# Start local server
-cd build/web && python -m http.server 8888
-# Open http://localhost:8888
+godot --headless --path ./project --export-release "Web" ../docs/index.html
 ```
 
-## Thread Support & SharedArrayBuffer
+## Controls
 
-Web exports use SharedArrayBuffer for multi-threading, which requires COOP/COEP headers:
-- `Cross-Origin-Opener-Policy: same-origin`
-- `Cross-Origin-Embedder-Policy: require-corp`
+| Input | Action |
+|-------|--------|
+| Mouse drag | Rotate camera |
+| Scroll | Zoom in/out |
+| Touch drag | Rotate (mobile) |
+| Pinch | Zoom (mobile) |
+| F3 | Toggle debug overlay |
+| Esc | Reset / Back |
 
-GitHub Pages doesn't support custom headers, so we use [coi-serviceworker](https://github.com/gzuidhof/coi-serviceworker) to inject them via service worker. On first visit, the page reloads once to activate the service worker.
+## CI/CD
 
-## Customization
-
-- **Project Settings:** Edit `project/project.godot` using the Godot editor
-- **Export Settings:** Modify `project/export_presets.cfg` for web export options
-- **Workflow:** Customize `.github/workflows/export-web.yml` for different deployment options
-- **Godot Version:** Update download URLs in the workflow for different versions
-
-## Troubleshooting
-
-### Export Fails
-- Check that `export_presets.cfg` is committed to the repository
-- Verify the export preset name matches "Web" in the workflow
-
-### Game Shows Black Screen
-- Check browser console for errors
-- Ensure coi-serviceworker.js is loaded (check for "COOP/COEP Service Worker registered" in console)
-- Try refreshing - first load registers the service worker, second load runs the game
-
-### Game Doesn't Load
-- Verify all assets are included in the export
-- Check that thread support is enabled in export_presets.cfg
+Push to `main` triggers automatic:
+1. Godot 4.6 web export
+2. SharedArrayBuffer headers injection
+3. GitHub Pages deployment
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE)
+
+---
+
+Made with [Godot Engine](https://godotengine.org/) by [synapticore.studio](https://github.com/synapticore-studio)
