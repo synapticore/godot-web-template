@@ -5,9 +5,14 @@ signal lighting_changed(preset: String)
 signal shader_changed(preset: String)
 
 @export var auto_rotate_object: bool = true
-@export var object_rotation_speed: float = 0.3
+@export var ring_speed_1: float = 0.3
+@export var ring_speed_2: float = 0.5
+@export var ring_speed_3: float = 0.4
 
-@onready var demo_mesh: MeshInstance3D = $DemoMesh
+@onready var demo_mesh: Node3D = $DemoMesh
+@onready var ring1: MeshInstance3D = $DemoMesh/Ring1
+@onready var ring2: MeshInstance3D = $DemoMesh/Ring2
+@onready var ring3: MeshInstance3D = $DemoMesh/Ring3
 @onready var main_light: DirectionalLight3D = $MainLight
 @onready var fill_light: DirectionalLight3D = $FillLight
 @onready var rim_light: DirectionalLight3D = $RimLight
@@ -67,8 +72,13 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if auto_rotate_object and demo_mesh:
-		demo_mesh.rotate_y(object_rotation_speed * delta)
+	if auto_rotate_object:
+		if ring1:
+			ring1.rotate_z(ring_speed_1 * delta)
+		if ring2:
+			ring2.rotate_x(ring_speed_2 * delta)
+		if ring3:
+			ring3.rotate_y(ring_speed_3 * delta)
 
 
 func _setup_environment() -> void:

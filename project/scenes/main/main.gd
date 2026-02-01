@@ -82,7 +82,8 @@ func _on_lighting_selected(index: int) -> void:
 
 
 func _on_post_selected(index: int) -> void:
-	var preset_name := ["none", "warm", "cool", "contrast", "desaturated"][index]
+	var presets: Array[String] = ["none", "warm", "cool", "contrast", "desaturated"]
+	var preset_name: String = presets[index]
 	SignalBus.post_process_changed.emit(preset_name)
 	Settings.current_post_preset = preset_name
 
