@@ -1,39 +1,59 @@
-[gd_scene load_steps=7 format=3 uid="uid://bvlrytldayvv0"]
+[gd_scene load_steps=8 format=3 uid="uid://bvlrytldayvv0"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_main"]
-[ext_resource type="Shader" path="res://resources/shaders/gradient_background.gdshader" id="2_gradient"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bg"]
-shader = ExtResource("2_gradient")
-shader_parameter/color_top = Color(0.06, 0.07, 0.1, 1)
-shader_parameter/color_bottom = Color(0.02, 0.025, 0.04, 1)
-shader_parameter/angle = 0.0
-shader_parameter/noise_strength = 0.008
-shader_parameter/animation_speed = 0.2
+[sub_resource type="StyleBoxFlat" id="panel_bg"]
+bg_color = Color(0.08, 0.085, 0.11, 0.95)
+border_width_left = 1
+border_color = Color(0.15, 0.16, 0.2, 1)
+corner_radius_top_left = 4
+corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxFlat" id="header_style"]
-bg_color = Color(0.08, 0.09, 0.12, 0.9)
-border_width_bottom = 1
-border_color = Color(0.15, 0.18, 0.25, 1)
-corner_radius_bottom_left = 0
-corner_radius_bottom_right = 0
+[sub_resource type="StyleBoxFlat" id="section_header"]
+bg_color = Color(0.1, 0.105, 0.14, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
 
-[sub_resource type="StyleBoxFlat" id="control_bar_style"]
-bg_color = Color(0.06, 0.07, 0.1, 0.95)
-border_width_top = 1
-border_color = Color(0.12, 0.15, 0.2, 1)
-
-[sub_resource type="StyleBoxFlat" id="button_style"]
-bg_color = Color(0.12, 0.14, 0.2, 1)
+[sub_resource type="StyleBoxFlat" id="dropdown_style"]
+bg_color = Color(0.12, 0.13, 0.17, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.2, 0.25, 0.35, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+border_color = Color(0.2, 0.22, 0.28, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="button_normal"]
+bg_color = Color(0.15, 0.16, 0.2, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.27, 0.32, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="button_hover"]
+bg_color = Color(0.2, 0.22, 0.28, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.5, 0.8, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="status_bar"]
+bg_color = Color(0.05, 0.055, 0.07, 0.9)
+border_width_top = 1
+border_color = Color(0.12, 0.13, 0.16, 1)
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -44,199 +64,253 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_main")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="ViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-material = SubResource("ShaderMaterial_bg")
+stretch = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="SubViewport" type="SubViewport" parent="ViewportContainer"]
+handle_input_locally = false
+msaa_3d = 2
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="PropertiesPanel" type="PanelContainer" parent="."]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 11
+anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
+offset_left = -260
+offset_top = 48
+offset_bottom = -28
+grow_horizontal = 0
 grow_vertical = 2
+theme_override_styles/panel = SubResource("panel_bg")
+
+[node name="PanelMargin" type="MarginContainer" parent="PropertiesPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="PanelContent" type="VBoxContainer" parent="PropertiesPanel/PanelMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MaterialSection" type="VBoxContainer" parent="PropertiesPanel/PanelMargin/PanelContent"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MaterialHeader" type="PanelContainer" parent="PropertiesPanel/PanelMargin/PanelContent/MaterialSection"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("section_header")
+
+[node name="MaterialHeaderContent" type="HBoxContainer" parent="PropertiesPanel/PanelMargin/PanelContent/MaterialSection/MaterialHeader"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MaterialIcon" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/MaterialSection/MaterialHeader/MaterialHeaderContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.65, 1.0, 1)
+theme_override_font_sizes/font_size = 12
+text = "●"
+
+[node name="MaterialLabel" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/MaterialSection/MaterialHeader/MaterialHeaderContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "MATERIAL"
+
+[node name="MaterialOptions" type="OptionButton" parent="PropertiesPanel/PanelMargin/PanelContent/MaterialSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.87, 0.92, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("dropdown_style")
+alignment = 0
+
+[node name="LightingSection" type="VBoxContainer" parent="PropertiesPanel/PanelMargin/PanelContent"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LightingHeader" type="PanelContainer" parent="PropertiesPanel/PanelMargin/PanelContent/LightingSection"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("section_header")
+
+[node name="LightingHeaderContent" type="HBoxContainer" parent="PropertiesPanel/PanelMargin/PanelContent/LightingSection/LightingHeader"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LightingIcon" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/LightingSection/LightingHeader/LightingHeaderContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1.0, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "◐"
+
+[node name="LightingLabel" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/LightingSection/LightingHeader/LightingHeaderContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "LIGHTING"
+
+[node name="LightingOptions" type="OptionButton" parent="PropertiesPanel/PanelMargin/PanelContent/LightingSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.87, 0.92, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("dropdown_style")
+alignment = 0
+
+[node name="PostSection" type="VBoxContainer" parent="PropertiesPanel/PanelMargin/PanelContent"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PostHeader" type="PanelContainer" parent="PropertiesPanel/PanelMargin/PanelContent/PostSection"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("section_header")
+
+[node name="PostHeaderContent" type="HBoxContainer" parent="PropertiesPanel/PanelMargin/PanelContent/PostSection/PostHeader"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PostIcon" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/PostSection/PostHeader/PostHeaderContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.5, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "◈"
+
+[node name="PostLabel" type="Label" parent="PropertiesPanel/PanelMargin/PanelContent/PostSection/PostHeader/PostHeaderContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "POST PROCESS"
+
+[node name="PostOptions" type="OptionButton" parent="PropertiesPanel/PanelMargin/PanelContent/PostSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.87, 0.92, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("dropdown_style")
+alignment = 0
+
+[node name="Spacer" type="Control" parent="PropertiesPanel/PanelMargin/PanelContent"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ResetButton" type="Button" parent="PropertiesPanel/PanelMargin/PanelContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.78, 1)
+theme_override_colors/font_hover_color = Color(0.9, 0.92, 0.98, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("button_normal")
+theme_override_styles/hover = SubResource("button_hover")
+text = "Reset View"
+
+[node name="HeaderBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 48
+grow_horizontal = 2
 theme_override_constants/separation = 0
 
-[node name="HeaderBar" type="PanelContainer" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("header_style")
-
-[node name="HeaderContent" type="HBoxContainer" parent="VBoxContainer/HeaderBar"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="LogoMargin" type="MarginContainer" parent="VBoxContainer/HeaderBar/HeaderContent"]
-layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="LogoContainer" type="HBoxContainer" parent="VBoxContainer/HeaderBar/HeaderContent/LogoMargin"]
+[node name="LogoSection" type="HBoxContainer" parent="HeaderBar"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="LogoIcon" type="Label" parent="VBoxContainer/HeaderBar/HeaderContent/LogoMargin/LogoContainer"]
+[node name="LogoMargin" type="MarginContainer" parent="HeaderBar/LogoSection"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.35, 0.65, 1.0, 1)
-theme_override_font_sizes/font_size = 22
-text = "S"
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_bottom = 12
 
-[node name="Logo" type="Label" parent="VBoxContainer/HeaderBar/HeaderContent/LogoMargin/LogoContainer"]
+[node name="LogoText" type="HBoxContainer" parent="HeaderBar/LogoSection/LogoMargin"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.88, 0.95, 1)
+theme_override_constants/separation = 6
+
+[node name="LogoIcon" type="Label" parent="HeaderBar/LogoSection/LogoMargin/LogoText"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.6, 1.0, 1)
 theme_override_font_sizes/font_size = 18
-text = "synapticore.studio"
+text = "◆"
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="VBoxContainer/HeaderBar/HeaderContent"]
+[node name="LogoName" type="Label" parent="HeaderBar/LogoSection/LogoMargin/LogoText"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.87, 0.92, 1)
+theme_override_font_sizes/font_size = 15
+text = "synapticore"
+vertical_alignment = 1
+
+[node name="LogoDot" type="Label" parent="HeaderBar/LogoSection/LogoMargin/LogoText"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.6, 1.0, 1)
+theme_override_font_sizes/font_size = 15
+text = "studio"
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="HeaderBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HeaderButtons" type="HBoxContainer" parent="VBoxContainer/HeaderBar/HeaderContent"]
-layout_mode = 2
-theme_override_constants/separation = 4
+[node name="StatusBar" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -28
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("status_bar")
 
-[node name="SettingsButton" type="Button" parent="VBoxContainer/HeaderBar/HeaderContent/HeaderButtons"]
-custom_minimum_size = Vector2(40, 40)
+[node name="StatusContent" type="HBoxContainer" parent="StatusBar"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
-theme_override_colors/font_hover_color = Color(0.4, 0.7, 1.0, 1)
-theme_override_font_sizes/font_size = 16
-text = "S"
-flat = true
+theme_override_constants/separation = 20
 
-[node name="HelpButton" type="Button" parent="VBoxContainer/HeaderBar/HeaderContent/HeaderButtons"]
-custom_minimum_size = Vector2(40, 40)
+[node name="StatusMargin" type="MarginContainer" parent="StatusBar/StatusContent"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
-theme_override_colors/font_hover_color = Color(0.4, 0.7, 1.0, 1)
-theme_override_font_sizes/font_size = 16
-text = "?"
-flat = true
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
 
-[node name="AudioButton" type="Button" parent="VBoxContainer/HeaderBar/HeaderContent/HeaderButtons"]
-custom_minimum_size = Vector2(40, 40)
+[node name="StatusLeft" type="HBoxContainer" parent="StatusBar/StatusContent/StatusMargin"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
-theme_override_colors/font_hover_color = Color(0.4, 0.7, 1.0, 1)
-theme_override_font_sizes/font_size = 14
-text = "VOL"
-flat = true
+theme_override_constants/separation = 16
 
-[node name="HeaderMarginRight" type="MarginContainer" parent="VBoxContainer/HeaderBar/HeaderContent"]
+[node name="MaterialStatus" type="Label" parent="StatusBar/StatusContent/StatusMargin/StatusLeft"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.52, 0.58, 1)
+theme_override_font_sizes/font_size = 11
+text = "Material: Default"
+
+[node name="LightingStatus" type="Label" parent="StatusBar/StatusContent/StatusMargin/StatusLeft"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.52, 0.58, 1)
+theme_override_font_sizes/font_size = 11
+text = "Lighting: Studio"
+
+[node name="PostStatus" type="Label" parent="StatusBar/StatusContent/StatusMargin/StatusLeft"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.52, 0.58, 1)
+theme_override_font_sizes/font_size = 11
+text = "Post: None"
+
+[node name="Spacer" type="Control" parent="StatusBar/StatusContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HelpLabel" type="Label" parent="StatusBar/StatusContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.42, 0.48, 1)
+theme_override_font_sizes/font_size = 11
+text = "Drag to rotate • Scroll to zoom"
+
+[node name="StatusMarginRight" type="MarginContainer" parent="StatusBar/StatusContent"]
 layout_mode = 2
 theme_override_constants/margin_right = 12
 
-[node name="ViewportContainer" type="SubViewportContainer" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-stretch = true
-
-[node name="SubViewport" type="SubViewport" parent="VBoxContainer/ViewportContainer"]
-handle_input_locally = false
-msaa_3d = 2
-size = Vector2i(1280, 720)
-render_target_update_mode = 4
-
-[node name="ControlBarPanel" type="PanelContainer" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("control_bar_style")
-
-[node name="ControlContent" type="MarginContainer" parent="VBoxContainer/ControlBarPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 12
-
-[node name="ControlBar" type="HBoxContainer" parent="VBoxContainer/ControlBarPanel/ControlContent"]
-layout_mode = 2
-theme_override_constants/separation = 24
-alignment = 1
-
-[node name="MarginLeft" type="Control" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ShaderGroup" type="HBoxContainer" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="ShaderLabel" type="Label" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/ShaderGroup"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.58, 0.68, 1)
-theme_override_font_sizes/font_size = 13
-text = "Material"
-vertical_alignment = 1
-
-[node name="ShaderButton" type="OptionButton" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/ShaderGroup"]
-custom_minimum_size = Vector2(120, 32)
-layout_mode = 2
-theme_override_styles/normal = SubResource("button_style")
-
-[node name="Separator1" type="VSeparator" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
-modulate = Color(0.3, 0.35, 0.45, 1)
-layout_mode = 2
-
-[node name="LightingGroup" type="HBoxContainer" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="LightingLabel" type="Label" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/LightingGroup"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.58, 0.68, 1)
-theme_override_font_sizes/font_size = 13
-text = "Lighting"
-vertical_alignment = 1
-
-[node name="LightingButton" type="OptionButton" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/LightingGroup"]
-custom_minimum_size = Vector2(120, 32)
-layout_mode = 2
-theme_override_styles/normal = SubResource("button_style")
-
-[node name="Separator2" type="VSeparator" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
-modulate = Color(0.3, 0.35, 0.45, 1)
-layout_mode = 2
-
-[node name="PostGroup" type="HBoxContainer" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="PostLabel" type="Label" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/PostGroup"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.58, 0.68, 1)
-theme_override_font_sizes/font_size = 13
-text = "Post"
-vertical_alignment = 1
-
-[node name="PostButton" type="OptionButton" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/PostGroup"]
-custom_minimum_size = Vector2(130, 32)
-layout_mode = 2
-theme_override_styles/normal = SubResource("button_style")
-
-[node name="Separator3" type="VSeparator" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
-modulate = Color(0.3, 0.35, 0.45, 1)
-layout_mode = 2
-
-[node name="ResetButton" type="Button" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
-custom_minimum_size = Vector2(80, 32)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
-theme_override_colors/font_hover_color = Color(0.4, 0.7, 1.0, 1)
-theme_override_font_sizes/font_size = 13
-theme_override_styles/normal = SubResource("button_style")
-text = "Reset"
-
-[node name="MarginRight" type="Control" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[connection signal="pressed" from="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/ResetButton" to="." method="_on_reset_pressed"]
+[connection signal="pressed" from="PropertiesPanel/PanelMargin/PanelContent/ResetButton" to="." method="_on_reset_pressed"]
