@@ -1,165 +1,116 @@
-[gd_scene load_steps=15 format=3 uid="uid://dgt7k2m1v8nxp"]
+[gd_scene load_steps=12 format=3 uid="uid://dgt7k2m1v8nxp"]
 
 [ext_resource type="Script" path="res://scenes/showcase/viewport_demo.gd" id="1_demo"]
 [ext_resource type="PackedScene" uid="uid://c3xm7jk8yv2dl" path="res://components/camera/orbit_camera.tscn" id="2_orbit"]
-[ext_resource type="Shader" path="res://resources/shaders/core_pulse.gdshader" id="3_core_shader"]
-[ext_resource type="Shader" path="res://resources/shaders/node_orb.gdshader" id="4_node_shader"]
+[ext_resource type="Shader" path="res://addons/hypercasualGradientShader/shaders/hypercasualSky.gdshader" id="3_sky"]
 
-[sub_resource type="ShaderMaterial" id="mat_core"]
-shader = ExtResource("3_core_shader")
-shader_parameter/core_color = Color(0.15, 0.5, 0.95, 1)
-shader_parameter/pulse_color = Color(0.4, 0.75, 1.0, 1)
-shader_parameter/pulse_speed = 1.2
-shader_parameter/pulse_intensity = 1.2
-shader_parameter/fresnel_power = 2.5
-shader_parameter/base_emission = 2.5
+[sub_resource type="ShaderMaterial" id="sky_mat"]
+shader = ExtResource("3_sky")
+shader_parameter/blendSmoothness = 0.6
+shader_parameter/colorA = Color(0.12, 0.14, 0.22, 1)
+shader_parameter/colorB = Color(0.04, 0.05, 0.08, 1)
+shader_parameter/deband = true
+shader_parameter/debandDepth = 256.0
 
-[sub_resource type="SphereMesh" id="core_mesh"]
-radius = 0.4
-height = 0.8
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 1
+ambient_light_color = Color(0.15, 0.18, 0.25, 1)
+ambient_light_energy = 0.4
+reflected_light_source = 1
+tonemap_mode = 3
+tonemap_exposure = 1.0
+tonemap_white = 1.5
+ssao_enabled = true
+ssao_radius = 0.5
+ssao_intensity = 1.0
+glow_enabled = true
+glow_intensity = 0.3
+glow_bloom = 0.05
+
+[sub_resource type="StandardMaterial3D" id="mat_platform"]
+albedo_color = Color(0.08, 0.09, 0.12, 1)
+metallic = 0.9
+roughness = 0.15
+emission_enabled = false
+
+[sub_resource type="CylinderMesh" id="mesh_platform"]
+material = SubResource("mat_platform")
+top_radius = 2.0
+bottom_radius = 2.2
+height = 0.1
+radial_segments = 48
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="mat_showcase"]
+albedo_color = Color(0.9, 0.92, 0.95, 1)
+metallic = 0.0
+roughness = 0.4
+
+[sub_resource type="SphereMesh" id="mesh_showcase"]
+radius = 0.6
+height = 1.2
 radial_segments = 48
 rings = 24
 
-[sub_resource type="ShaderMaterial" id="mat_node1"]
-shader = ExtResource("4_node_shader")
-shader_parameter/node_color = Color(0.3, 0.65, 1.0, 1)
-shader_parameter/pulse_speed = 2.2
-shader_parameter/pulse_offset = 0.0
-shader_parameter/emission_strength = 1.8
-shader_parameter/fresnel_power = 3.0
+[sub_resource type="StandardMaterial3D" id="mat_accent"]
+albedo_color = Color(0.1, 0.2, 0.4, 1)
+metallic = 0.9
+roughness = 0.1
+emission_enabled = true
+emission = Color(0.15, 0.4, 0.9, 1)
+emission_energy_multiplier = 1.5
 
-[sub_resource type="ShaderMaterial" id="mat_node2"]
-shader = ExtResource("4_node_shader")
-shader_parameter/node_color = Color(0.25, 0.55, 0.9, 1)
-shader_parameter/pulse_speed = 1.8
-shader_parameter/pulse_offset = 2.1
-shader_parameter/emission_strength = 1.6
-shader_parameter/fresnel_power = 2.8
-
-[sub_resource type="ShaderMaterial" id="mat_node3"]
-shader = ExtResource("4_node_shader")
-shader_parameter/node_color = Color(0.35, 0.7, 0.95, 1)
-shader_parameter/pulse_speed = 2.5
-shader_parameter/pulse_offset = 4.2
-shader_parameter/emission_strength = 2.0
-shader_parameter/fresnel_power = 3.2
-
-[sub_resource type="ShaderMaterial" id="mat_node4"]
-shader = ExtResource("4_node_shader")
-shader_parameter/node_color = Color(0.2, 0.6, 1.0, 1)
-shader_parameter/pulse_speed = 1.5
-shader_parameter/pulse_offset = 1.0
-shader_parameter/emission_strength = 1.5
-shader_parameter/fresnel_power = 2.5
-
-[sub_resource type="SphereMesh" id="node_mesh"]
-radius = 0.12
-height = 0.24
-radial_segments = 24
-rings = 12
-
-[sub_resource type="StandardMaterial3D" id="mat_stream"]
-transparency = 1
-blend_mode = 1
-shading_mode = 0
-albedo_color = Color(0.3, 0.65, 1.0, 0.6)
-
-[sub_resource type="CylinderMesh" id="stream_mesh"]
-material = SubResource("mat_stream")
-top_radius = 0.015
-bottom_radius = 0.015
-height = 1.0
-radial_segments = 8
-rings = 1
-
-[sub_resource type="SphereMesh" id="particle_mesh"]
-radius = 0.025
-height = 0.05
-radial_segments = 8
-rings = 4
+[sub_resource type="TorusMesh" id="mesh_ring"]
+inner_radius = 0.75
+outer_radius = 0.85
+rings = 32
+ring_segments = 48
 
 [node name="ViewportDemo" type="Node3D"]
 script = ExtResource("1_demo")
 
-[node name="SynapticoreLogo" type="Node3D" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
 
-[node name="Core" type="MeshInstance3D" parent="SynapticoreLogo"]
-material_override = SubResource("mat_core")
-mesh = SubResource("core_mesh")
+[node name="Platform" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.65, 0)
+mesh = SubResource("mesh_platform")
 
-[node name="Nodes" type="Node3D" parent="SynapticoreLogo"]
+[node name="ShowcaseObject" type="Node3D" parent="."]
 
-[node name="Node1" type="MeshInstance3D" parent="SynapticoreLogo/Nodes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 0.3, 0.2)
-material_override = SubResource("mat_node1")
-mesh = SubResource("node_mesh")
+[node name="MainSphere" type="MeshInstance3D" parent="ShowcaseObject"]
+material_override = SubResource("mat_showcase")
+mesh = SubResource("mesh_showcase")
 
-[node name="Node2" type="MeshInstance3D" parent="SynapticoreLogo/Nodes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, -0.4, 0.6)
-material_override = SubResource("mat_node2")
-mesh = SubResource("node_mesh")
-
-[node name="Node3" type="MeshInstance3D" parent="SynapticoreLogo/Nodes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.9, -0.5)
-material_override = SubResource("mat_node3")
-mesh = SubResource("node_mesh")
-
-[node name="Node4" type="MeshInstance3D" parent="SynapticoreLogo/Nodes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, -0.2, -0.9)
-material_override = SubResource("mat_node4")
-mesh = SubResource("node_mesh")
-
-[node name="Node5" type="MeshInstance3D" parent="SynapticoreLogo/Nodes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, -0.7, 0.5)
-material_override = SubResource("mat_node1")
-mesh = SubResource("node_mesh")
-
-[node name="Node6" type="MeshInstance3D" parent="SynapticoreLogo/Nodes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.6, 0.7)
-material_override = SubResource("mat_node3")
-mesh = SubResource("node_mesh")
-
-[node name="Streams" type="Node3D" parent="SynapticoreLogo"]
-
-[node name="Stream1" type="MeshInstance3D" parent="SynapticoreLogo/Streams"]
-mesh = SubResource("stream_mesh")
-
-[node name="Stream2" type="MeshInstance3D" parent="SynapticoreLogo/Streams"]
-mesh = SubResource("stream_mesh")
-
-[node name="Stream3" type="MeshInstance3D" parent="SynapticoreLogo/Streams"]
-mesh = SubResource("stream_mesh")
-
-[node name="Stream4" type="MeshInstance3D" parent="SynapticoreLogo/Streams"]
-mesh = SubResource("stream_mesh")
-
-[node name="Stream5" type="MeshInstance3D" parent="SynapticoreLogo/Streams"]
-mesh = SubResource("stream_mesh")
-
-[node name="Stream6" type="MeshInstance3D" parent="SynapticoreLogo/Streams"]
-mesh = SubResource("stream_mesh")
-
-[node name="Particles" type="Node3D" parent="SynapticoreLogo"]
+[node name="AccentRing" type="MeshInstance3D" parent="ShowcaseObject"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+material_override = SubResource("mat_accent")
+mesh = SubResource("mesh_ring")
 
 [node name="OrbitCamera" parent="." instance=ExtResource("2_orbit")]
-distance = 3.5
+distance = 4.0
 auto_rotate = true
-auto_rotate_speed = 0.12
+auto_rotate_speed = 0.1
 
-[node name="MainLight" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 3, 0)
-light_color = Color(0.95, 0.97, 1.0, 1)
-light_energy = 0.8
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 3, 0)
+light_color = Color(1, 0.98, 0.95, 1)
+light_energy = 1.2
 shadow_enabled = true
 
 [node name="FillLight" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 2, 0)
-light_color = Color(0.7, 0.8, 1.0, 1)
-light_energy = 0.25
+transform = Transform3D(0.866025, 0.353553, -0.353553, 0, 0.707107, 0.707107, 0.5, -0.612372, 0.612372, 0, 2, 0)
+light_color = Color(0.8, 0.85, 1.0, 1)
+light_energy = 0.4
 
 [node name="RimLight" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-1, 0, 0, 0, 0.707107, -0.707107, 0, -0.707107, -0.707107, 0, 2, -3)
-light_color = Color(0.6, 0.7, 1.0, 1)
-light_energy = 0.4
+transform = Transform3D(-1, 0, 0, 0, 0.5, -0.866025, 0, -0.866025, -0.5, 0, 2, -3)
+light_color = Color(0.9, 0.95, 1.0, 1)
+light_energy = 0.6
 
 [editable path="OrbitCamera"]
