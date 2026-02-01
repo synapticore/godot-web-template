@@ -26,12 +26,6 @@ func _setup_viewport() -> void:
 	_viewport_demo = demo_scene.instantiate()
 	sub_viewport.add_child(_viewport_demo)
 
-	# Connect demo mesh reference
-	_viewport_demo.demo_mesh = _viewport_demo.get_node("DemoMesh")
-	_viewport_demo.main_light = _viewport_demo.get_node("MainLight")
-	_viewport_demo.fill_light = _viewport_demo.get_node("FillLight")
-	_viewport_demo.rim_light = _viewport_demo.get_node("RimLight")
-
 
 func _setup_controls() -> void:
 	# Shader presets

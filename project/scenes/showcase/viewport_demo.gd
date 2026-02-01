@@ -4,18 +4,15 @@ extends Node3D
 signal lighting_changed(preset: String)
 signal shader_changed(preset: String)
 
-@export_group("Demo Object")
-@export var demo_mesh: MeshInstance3D
 @export var auto_rotate_object: bool = true
 @export var object_rotation_speed: float = 0.3
 
-@export_group("Materials")
-@export var material_presets: Dictionary = {}  # name -> Material
+@onready var demo_mesh: MeshInstance3D = $DemoMesh
+@onready var main_light: DirectionalLight3D = $MainLight
+@onready var fill_light: DirectionalLight3D = $FillLight
+@onready var rim_light: DirectionalLight3D = $RimLight
 
-@export_group("Lighting")
-@export var main_light: DirectionalLight3D
-@export var fill_light: DirectionalLight3D
-@export var rim_light: DirectionalLight3D
+var material_presets: Dictionary = {}
 
 # Lighting presets
 const LIGHTING_PRESETS := {
