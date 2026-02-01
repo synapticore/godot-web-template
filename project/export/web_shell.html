@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script src="coi-serviceworker.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+	<title>$GODOT_PROJECT_NAME</title>
+	<style>
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html, body, #canvas {
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+body {
+	font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+	color: #d9e0f2;
+	background: linear-gradient(135deg, #050608 0%, #0a0c12 50%, #0f1119 100%);
+	overflow: hidden;
+	touch-action: none;
+}
+
+#canvas {
+	display: block;
+}
+
+#canvas:focus {
+	outline: none;
+}
+
+/* Loading Screen */
+#status {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: linear-gradient(135deg, #050608 0%, #0a0c12 50%, #0f1119 100%);
+	visibility: hidden;
+	z-index: 100;
+}
+
+/* Synapticore Logo Animation */
+.logo-container {
+	position: relative;
+	width: 120px;
+	height: 120px;
+	margin-bottom: 32px;
+}
+
+.logo-core {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 40px;
+	height: 40px;
+	transform: translate(-50%, -50%);
+	background: radial-gradient(circle, #5aa5ff 0%, #266bf2 50%, #1a4fd6 100%);
+	border-radius: 50%;
+	box-shadow:
+		0 0 30px rgba(90, 165, 255, 0.6),
+		0 0 60px rgba(38, 107, 242, 0.4),
+		0 0 90px rgba(38, 107, 242, 0.2);
+	animation: core-pulse 2s ease-in-out infinite;
+}
+
+.logo-ring {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	border: 2px solid rgba(90, 165, 255, 0.4);
+	border-radius: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.logo-ring:nth-child(2) {
+	width: 70px;
+	height: 70px;
+	animation: ring-rotate 8s linear infinite;
+}
+
+.logo-ring:nth-child(3) {
+	width: 95px;
+	height: 95px;
+	animation: ring-rotate 12s linear infinite reverse;
+	border-color: rgba(90, 165, 255, 0.25);
+}
+
+.logo-ring:nth-child(4) {
+	width: 115px;
+	height: 115px;
+	animation: ring-rotate 16s linear infinite;
+	border-color: rgba(90, 165, 255, 0.15);
+}
+
+/* Orbiting nodes */
+.logo-node {
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	background: #5aa5ff;
+	border-radius: 50%;
+	box-shadow: 0 0 10px rgba(90, 165, 255, 0.8);
+}
+
+.logo-ring:nth-child(2) .logo-node {
+	top: -4px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.logo-ring:nth-child(3) .logo-node {
+	top: 50%;
+	right: -4px;
+	transform: translateY(-50%);
+}
+
+@keyframes core-pulse {
+	0%, 100% {
+		transform: translate(-50%, -50%) scale(1);
+		box-shadow:
+			0 0 30px rgba(90, 165, 255, 0.6),
+			0 0 60px rgba(38, 107, 242, 0.4),
+			0 0 90px rgba(38, 107, 242, 0.2);
+	}
+	50% {
+		transform: translate(-50%, -50%) scale(1.1);
+		box-shadow:
+			0 0 40px rgba(90, 165, 255, 0.8),
+			0 0 80px rgba(38, 107, 242, 0.5),
+			0 0 120px rgba(38, 107, 242, 0.3);
+	}
+}
+
+@keyframes ring-rotate {
+	from { transform: translate(-50%, -50%) rotate(0deg); }
+	to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Branding */
+.brand-text {
+	font-size: 24px;
+	font-weight: 300;
+	letter-spacing: 4px;
+	text-transform: uppercase;
+	color: #d9e0f2;
+	margin-bottom: 8px;
+}
+
+.brand-text span {
+	color: #5aa5ff;
+	font-weight: 500;
+}
+
+.brand-tagline {
+	font-size: 11px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: #8c94ad;
+	margin-bottom: 40px;
+}
+
+/* Progress Bar */
+#status-progress {
+	width: 200px;
+	height: 3px;
+	background: rgba(90, 165, 255, 0.1);
+	border-radius: 2px;
+	overflow: hidden;
+	border: none;
+	appearance: none;
+	-webkit-appearance: none;
+}
+
+#status-progress::-webkit-progress-bar {
+	background: rgba(90, 165, 255, 0.1);
+	border-radius: 2px;
+}
+
+#status-progress::-webkit-progress-value {
+	background: linear-gradient(90deg, #266bf2, #5aa5ff);
+	border-radius: 2px;
+	transition: width 0.3s ease;
+}
+
+#status-progress::-moz-progress-bar {
+	background: linear-gradient(90deg, #266bf2, #5aa5ff);
+	border-radius: 2px;
+}
+
+.loading-text {
+	margin-top: 16px;
+	font-size: 12px;
+	letter-spacing: 1px;
+	color: #8c94ad;
+}
+
+/* Error Notice */
+#status-notice {
+	display: none;
+	max-width: 400px;
+	background: rgba(155, 57, 67, 0.2);
+	border: 1px solid rgba(155, 57, 67, 0.5);
+	border-radius: 8px;
+	padding: 20px;
+	text-align: center;
+	font-size: 14px;
+	line-height: 1.5;
+	color: #e0e0e0;
+}
+
+/* Hide splash image - we use CSS logo instead */
+#status-splash {
+	display: none !important;
+}
+	</style>
+	$GODOT_HEAD_INCLUDE
+</head>
+<body>
+	<canvas id="canvas">
+		Your browser does not support the canvas tag.
+	</canvas>
+
+	<noscript>
+		Your browser does not support JavaScript.
+	</noscript>
+
+	<div id="status">
+		<div class="logo-container">
+			<div class="logo-core"></div>
+			<div class="logo-ring"><div class="logo-node"></div></div>
+			<div class="logo-ring"><div class="logo-node"></div></div>
+			<div class="logo-ring"></div>
+		</div>
+		<div class="brand-text">synapti<span>core</span></div>
+		<div class="brand-tagline">Virtual Production Studio</div>
+		<progress id="status-progress"></progress>
+		<div class="loading-text">Loading experience...</div>
+		<div id="status-notice"></div>
+		<img id="status-splash" src="" alt="" style="display:none;">
+	</div>
+
+	<script src="$GODOT_URL"></script>
+	<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+	const loadingText = document.querySelector('.loading-text');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.style.opacity = '0';
+			statusOverlay.style.transition = 'opacity 0.5s ease';
+			setTimeout(() => {
+				statusOverlay.remove();
+			}, 500);
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		if (loadingText) {
+			loadingText.style.display = mode === 'progress' ? 'block' : 'none';
+		}
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		setStatusMode('progress');
+		engine.startGame({
+			'onProgress': function (current, total) {
+				if (current > 0 && total > 0) {
+					statusProgress.value = current;
+					statusProgress.max = total;
+					const percent = Math.round((current / total) * 100);
+					if (loadingText) {
+						loadingText.textContent = `Loading... ${percent}%`;
+					}
+				} else {
+					statusProgress.removeAttribute('value');
+					statusProgress.removeAttribute('max');
+				}
+			},
+		}).then(() => {
+			setStatusMode('hidden');
+		}, displayFailureNotice);
+	}
+}());
+	</script>
+</body>
+</html>

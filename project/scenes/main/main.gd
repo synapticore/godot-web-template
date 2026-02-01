@@ -1,16 +1,17 @@
 extends Control
-## Main scene - Studio template showcase with UI controls
+## Main scene - Synapticore Studio showcase with polished UI controls
 
 @onready var viewport_container: SubViewportContainer = $VBoxContainer/ViewportContainer
 @onready var sub_viewport: SubViewport = $VBoxContainer/ViewportContainer/SubViewport
-@onready var shader_button: OptionButton = $VBoxContainer/ControlBar/ShaderButton
-@onready var lighting_button: OptionButton = $VBoxContainer/ControlBar/LightingButton
-@onready var post_button: OptionButton = $VBoxContainer/ControlBar/PostButton
-@onready var settings_button: Button = $VBoxContainer/HeaderBar/SettingsButton
-@onready var help_button: Button = $VBoxContainer/HeaderBar/HelpButton
-@onready var audio_button: Button = $VBoxContainer/HeaderBar/AudioButton
+@onready var shader_button: OptionButton = $VBoxContainer/ControlBarPanel/ControlContent/ControlBar/ShaderGroup/ShaderButton
+@onready var lighting_button: OptionButton = $VBoxContainer/ControlBarPanel/ControlContent/ControlBar/LightingGroup/LightingButton
+@onready var post_button: OptionButton = $VBoxContainer/ControlBarPanel/ControlContent/ControlBar/PostGroup/PostButton
+@onready var settings_button: Button = $VBoxContainer/HeaderBar/HeaderContent/HeaderButtons/SettingsButton
+@onready var help_button: Button = $VBoxContainer/HeaderBar/HeaderContent/HeaderButtons/HelpButton
+@onready var audio_button: Button = $VBoxContainer/HeaderBar/HeaderContent/HeaderButtons/AudioButton
 
 var _viewport_demo: Node3D
+var _is_muted: bool = false
 
 
 func _ready() -> void:
@@ -101,9 +102,9 @@ func _on_help_pressed() -> void:
 func _on_audio_pressed() -> void:
 	# Toggle mute
 	var master_idx := AudioServer.get_bus_index("Master")
-	var is_muted := AudioServer.is_bus_mute(master_idx)
-	AudioServer.set_bus_mute(master_idx, not is_muted)
-	audio_button.text = "🔇" if not is_muted else "🔊"
+	_is_muted = not _is_muted
+	AudioServer.set_bus_mute(master_idx, _is_muted)
+	audio_button.text = "MUTE" if _is_muted else "VOL"
 
 
 func _on_reset_pressed() -> void:

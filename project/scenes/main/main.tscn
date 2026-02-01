@@ -1,15 +1,39 @@
-[gd_scene load_steps=3 format=3 uid="uid://bvlrytldayvv0"]
+[gd_scene load_steps=7 format=3 uid="uid://bvlrytldayvv0"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_main"]
 [ext_resource type="Shader" path="res://resources/shaders/gradient_background.gdshader" id="2_gradient"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bg"]
 shader = ExtResource("2_gradient")
-shader_parameter/color_top = Color(0.12, 0.12, 0.15, 1)
-shader_parameter/color_bottom = Color(0.06, 0.06, 0.08, 1)
+shader_parameter/color_top = Color(0.06, 0.07, 0.1, 1)
+shader_parameter/color_bottom = Color(0.02, 0.025, 0.04, 1)
 shader_parameter/angle = 0.0
-shader_parameter/noise_strength = 0.015
-shader_parameter/animation_speed = 0.3
+shader_parameter/noise_strength = 0.008
+shader_parameter/animation_speed = 0.2
+
+[sub_resource type="StyleBoxFlat" id="header_style"]
+bg_color = Color(0.08, 0.09, 0.12, 0.9)
+border_width_bottom = 1
+border_color = Color(0.15, 0.18, 0.25, 1)
+corner_radius_bottom_left = 0
+corner_radius_bottom_right = 0
+
+[sub_resource type="StyleBoxFlat" id="control_bar_style"]
+bg_color = Color(0.06, 0.07, 0.1, 0.95)
+border_width_top = 1
+border_color = Color(0.12, 0.15, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="button_style"]
+bg_color = Color(0.12, 0.14, 0.2, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.25, 0.35, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -39,42 +63,76 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="HeaderBar" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HeaderBar" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/separation = 16
+theme_override_styles/panel = SubResource("header_style")
 
-[node name="Logo" type="Label" parent="VBoxContainer/HeaderBar"]
+[node name="HeaderContent" type="HBoxContainer" parent="VBoxContainer/HeaderBar"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="LogoMargin" type="MarginContainer" parent="VBoxContainer/HeaderBar/HeaderContent"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="LogoContainer" type="HBoxContainer" parent="VBoxContainer/HeaderBar/HeaderContent/LogoMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LogoIcon" type="Label" parent="VBoxContainer/HeaderBar/HeaderContent/LogoMargin/LogoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.65, 1.0, 1)
+theme_override_font_sizes/font_size = 22
+text = "S"
+
+[node name="Logo" type="Label" parent="VBoxContainer/HeaderBar/HeaderContent/LogoMargin/LogoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.88, 0.95, 1)
+theme_override_font_sizes/font_size = 18
+text = "synapticore.studio"
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="VBoxContainer/HeaderBar/HeaderContent"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.9, 0.9, 0.95, 1)
-theme_override_font_sizes/font_size = 20
-text = "synapticore.studio"
 
-[node name="SettingsButton" type="Button" parent="VBoxContainer/HeaderBar"]
-custom_minimum_size = Vector2(44, 44)
+[node name="HeaderButtons" type="HBoxContainer" parent="VBoxContainer/HeaderBar/HeaderContent"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "⚙"
+theme_override_constants/separation = 4
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer/HeaderBar/HeaderContent/HeaderButtons"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.7, 1.0, 1)
+theme_override_font_sizes/font_size = 16
+text = "S"
 flat = true
 
-[node name="HelpButton" type="Button" parent="VBoxContainer/HeaderBar"]
-custom_minimum_size = Vector2(44, 44)
+[node name="HelpButton" type="Button" parent="VBoxContainer/HeaderBar/HeaderContent/HeaderButtons"]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.7, 1.0, 1)
+theme_override_font_sizes/font_size = 16
 text = "?"
 flat = true
 
-[node name="AudioButton" type="Button" parent="VBoxContainer/HeaderBar"]
-custom_minimum_size = Vector2(44, 44)
+[node name="AudioButton" type="Button" parent="VBoxContainer/HeaderBar/HeaderContent/HeaderButtons"]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "🔊"
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.7, 1.0, 1)
+theme_override_font_sizes/font_size = 14
+text = "VOL"
 flat = true
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HeaderBar"]
+[node name="HeaderMarginRight" type="MarginContainer" parent="VBoxContainer/HeaderBar/HeaderContent"]
 layout_mode = 2
-theme_override_constants/margin_right = 16
+theme_override_constants/margin_right = 12
 
 [node name="ViewportContainer" type="SubViewportContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -88,64 +146,98 @@ screen_space_aa = 1
 size = Vector2i(1280, 720)
 render_target_update_mode = 4
 
-[node name="ControlBar" type="HBoxContainer" parent="VBoxContainer"]
+[node name="ControlBarPanel" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/separation = 16
+theme_override_styles/panel = SubResource("control_bar_style")
+
+[node name="ControlContent" type="MarginContainer" parent="VBoxContainer/ControlBarPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 12
+
+[node name="ControlBar" type="HBoxContainer" parent="VBoxContainer/ControlBarPanel/ControlContent"]
+layout_mode = 2
+theme_override_constants/separation = 24
 alignment = 1
 
-[node name="MarginLeft" type="Control" parent="VBoxContainer/ControlBar"]
+[node name="MarginLeft" type="Control" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ShaderLabel" type="Label" parent="VBoxContainer/ControlBar"]
+[node name="ShaderGroup" type="HBoxContainer" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.7, 0.75, 1)
-text = "Material:"
+theme_override_constants/separation = 8
 
-[node name="ShaderButton" type="OptionButton" parent="VBoxContainer/ControlBar"]
-custom_minimum_size = Vector2(120, 36)
+[node name="ShaderLabel" type="Label" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/ShaderGroup"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.58, 0.68, 1)
+theme_override_font_sizes/font_size = 13
+text = "Material"
+vertical_alignment = 1
 
-[node name="Separator1" type="VSeparator" parent="VBoxContainer/ControlBar"]
+[node name="ShaderButton" type="OptionButton" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/ShaderGroup"]
+custom_minimum_size = Vector2(120, 32)
 layout_mode = 2
+theme_override_styles/normal = SubResource("button_style")
 
-[node name="LightingLabel" type="Label" parent="VBoxContainer/ControlBar"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.7, 0.75, 1)
-text = "Lighting:"
-
-[node name="LightingButton" type="OptionButton" parent="VBoxContainer/ControlBar"]
-custom_minimum_size = Vector2(120, 36)
-layout_mode = 2
-
-[node name="Separator2" type="VSeparator" parent="VBoxContainer/ControlBar"]
+[node name="Separator1" type="VSeparator" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
+modulate = Color(0.3, 0.35, 0.45, 1)
 layout_mode = 2
 
-[node name="PostLabel" type="Label" parent="VBoxContainer/ControlBar"]
+[node name="LightingGroup" type="HBoxContainer" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.7, 0.75, 1)
-text = "Post:"
+theme_override_constants/separation = 8
 
-[node name="PostButton" type="OptionButton" parent="VBoxContainer/ControlBar"]
-custom_minimum_size = Vector2(140, 36)
+[node name="LightingLabel" type="Label" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/LightingGroup"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.58, 0.68, 1)
+theme_override_font_sizes/font_size = 13
+text = "Lighting"
+vertical_alignment = 1
+
+[node name="LightingButton" type="OptionButton" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/LightingGroup"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+theme_override_styles/normal = SubResource("button_style")
+
+[node name="Separator2" type="VSeparator" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
+modulate = Color(0.3, 0.35, 0.45, 1)
 layout_mode = 2
 
-[node name="Separator3" type="VSeparator" parent="VBoxContainer/ControlBar"]
+[node name="PostGroup" type="HBoxContainer" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PostLabel" type="Label" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/PostGroup"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.58, 0.68, 1)
+theme_override_font_sizes/font_size = 13
+text = "Post"
+vertical_alignment = 1
+
+[node name="PostButton" type="OptionButton" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/PostGroup"]
+custom_minimum_size = Vector2(130, 32)
+layout_mode = 2
+theme_override_styles/normal = SubResource("button_style")
+
+[node name="Separator3" type="VSeparator" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
+modulate = Color(0.3, 0.35, 0.45, 1)
 layout_mode = 2
 
-[node name="ResetButton" type="Button" parent="VBoxContainer/ControlBar"]
-custom_minimum_size = Vector2(80, 36)
+[node name="ResetButton" type="Button" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
+custom_minimum_size = Vector2(80, 32)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.7, 1.0, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("button_style")
 text = "Reset"
 
-[node name="MarginRight" type="Control" parent="VBoxContainer/ControlBar"]
+[node name="MarginRight" type="Control" parent="VBoxContainer/ControlBarPanel/ControlContent/ControlBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginBottom" type="MarginContainer" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[connection signal="pressed" from="VBoxContainer/ControlBar/ResetButton" to="." method="_on_reset_pressed"]
+[connection signal="pressed" from="VBoxContainer/ControlBarPanel/ControlContent/ControlBar/ResetButton" to="." method="_on_reset_pressed"]
