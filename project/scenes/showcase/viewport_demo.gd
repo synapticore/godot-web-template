@@ -326,7 +326,7 @@ func set_shader_preset(preset_name: String) -> void:
 		for node_mesh in nodes_container.get_children():
 			if node_mesh is MeshInstance3D and node_mesh.material_override:
 				var mat: ShaderMaterial = node_mesh.material_override
-				var node_color := preset.nodes
+				var node_color: Color = preset.nodes
 				# Slight variation per node
 				var variation := randf() * 0.1 - 0.05
 				mat.set_shader_parameter("node_color", Color(
