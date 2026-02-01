@@ -48,15 +48,26 @@ func _ready() -> void:
 	SignalBus.camera_reset_requested.connect(reset_camera)
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	_handle_input(event)
+
+
 func _input(event: InputEvent) -> void:
+	# Also handle in _input for SubViewport compatibility
+	_handle_input(event)
+
+
+func _handle_input(event: InputEvent) -> void:
 	# Mouse drag rotation
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_is_dragging = event.pressed
-		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			_target_distance = maxf(_target_distance - zoom_speed, min_distance)
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			get_viewport().set_input_as_handled()
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
 			_target_distance = minf(_target_distance + zoom_speed, max_distance)
+			get_viewport().set_input_as_handled()
 
 	if event is InputEventMouseMotion and _is_dragging:
 		_target_yaw -= event.relative.x * rotation_speed
@@ -78,6 +89,16 @@ func _input(event: InputEvent) -> void:
 			min_distance,
 			max_distance
 		)
+		get_viewport().set_input_as_handled()
+
+	# Pan gesture (two-finger scroll on trackpad) for zoom
+	if event is InputEventPanGesture:
+		_target_distance = clampf(
+			_target_distance + event.delta.y * zoom_speed * 0.1,
+			min_distance,
+			max_distance
+		)
+		get_viewport().set_input_as_handled()
 
 
 func _process(delta: float) -> void:

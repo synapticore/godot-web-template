@@ -33,10 +33,12 @@ glow_intensity = 0.3
 glow_bloom = 0.05
 
 [sub_resource type="StandardMaterial3D" id="mat_platform"]
-albedo_color = Color(0.08, 0.09, 0.12, 1)
-metallic = 0.9
-roughness = 0.15
-emission_enabled = false
+albedo_color = Color(0.04, 0.045, 0.06, 1)
+metallic = 1.0
+roughness = 0.08
+rim_enabled = true
+rim = 0.3
+rim_tint = 0.2
 
 [sub_resource type="CylinderMesh" id="mesh_platform"]
 material = SubResource("mat_platform")
