@@ -159,11 +159,11 @@ func _process(delta: float) -> void:
 	distance = lerpf(distance, _target_distance, pos_factor)
 
 	# Calculate camera position
-	var target_pos := Vector3.ZERO
+	var target_pos: Vector3 = Vector3.ZERO
 	if target:
 		target_pos = target.global_position + target_offset
 
-	var offset := Vector3.ZERO
+	var offset: Vector3 = Vector3.ZERO
 	offset.x = distance * cos(deg_to_rad(_pitch)) * sin(deg_to_rad(_yaw))
 	offset.y = distance * sin(deg_to_rad(_pitch))
 	offset.z = distance * cos(deg_to_rad(_pitch)) * cos(deg_to_rad(_yaw))
