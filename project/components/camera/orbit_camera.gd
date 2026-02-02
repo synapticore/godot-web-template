@@ -90,8 +90,8 @@ func _handle_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 	if event is InputEventMouseMotion and _is_dragging:
-		var delta_yaw := -event.relative.x * rotation_speed
-		var delta_pitch := -event.relative.y * rotation_speed
+		var delta_yaw: float = -event.relative.x * rotation_speed
+		var delta_pitch: float = -event.relative.y * rotation_speed
 		_target_yaw += delta_yaw
 		_target_pitch += delta_pitch
 		_target_pitch = clampf(_target_pitch, min_pitch, max_pitch)
@@ -100,8 +100,8 @@ func _handle_input(event: InputEvent) -> void:
 
 	# Touch support
 	if event is InputEventScreenDrag:
-		var delta_yaw := -event.relative.x * rotation_speed
-		var delta_pitch := -event.relative.y * rotation_speed
+		var delta_yaw: float = -event.relative.x * rotation_speed
+		var delta_pitch: float = -event.relative.y * rotation_speed
 		_target_yaw += delta_yaw
 		_target_pitch += delta_pitch
 		_target_pitch = clampf(_target_pitch, min_pitch, max_pitch)
@@ -119,7 +119,7 @@ func _handle_input(event: InputEvent) -> void:
 
 	# Pan gesture (two-finger scroll on trackpad) for zoom
 	if event is InputEventPanGesture:
-		var zoom_delta := event.delta.y * zoom_factor * 0.5
+		var zoom_delta: float = event.delta.y * zoom_factor * 0.5
 		_target_distance = clampf(
 			_target_distance * (1.0 + zoom_delta),
 			min_distance,
@@ -151,8 +151,8 @@ func _process(delta: float) -> void:
 		_target_yaw += auto_rotate_speed * delta
 
 	# Smooth interpolation - use exp decay for consistent feel regardless of framerate
-	var rot_factor := 1.0 - exp(-rotation_smoothing * delta)
-	var pos_factor := 1.0 - exp(-position_smoothing * delta)
+	var rot_factor: float = 1.0 - exp(-rotation_smoothing * delta)
+	var pos_factor: float = 1.0 - exp(-position_smoothing * delta)
 
 	_yaw = lerpf(_yaw, _target_yaw, rot_factor)
 	_pitch = lerpf(_pitch, _target_pitch, rot_factor)
