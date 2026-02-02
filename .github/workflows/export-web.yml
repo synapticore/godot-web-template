@@ -49,9 +49,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: project/.godot
-          key: godot-import-${{ hashFiles('project/**/*.tscn', 'project/**/*.tres', 'project/**/*.gd') }}
-          restore-keys: |
-            godot-import-
+          key: godot-import-${{ hashFiles('project/**/*.tscn', 'project/**/*.tres', 'project/**/*.gd', 'project/**/*.gdshader') }}
 
       - name: Export Web
         run: |
